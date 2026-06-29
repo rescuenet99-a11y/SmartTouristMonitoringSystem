@@ -1,0 +1,12 @@
+body{
+    background:#f4f7fc;
+}
+
+.card{
+    max-width:600px;
+    margin:auto;
+}
+
+h2{
+    font-weight:bold;
+}
