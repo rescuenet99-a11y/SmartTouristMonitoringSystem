@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard - Smart Tourist Safety Monitoring</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Custom CSS -->
+  <link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet" />
+  <!-- Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+</head>
+<body>
+  <div class="sidebar" id="sidebar">
+    <div class="brand">Smart Tourist Safety Monitoring System</div>
+    <ul class="nav flex-column">
+      <li class="nav-item"><a class="nav-link active" href="{{ url_for('admin_dashboard') }}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('tourist_dashboard') }}"><i class="bi bi-people"></i> Tourist Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('analytics') }}"><i class="bi bi-bar-chart"></i> Analytics</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('heatmaps') }}"><i class="bi bi-geo-alt"></i> Heat Maps</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('reports') }}"><i class="bi bi-file-earmark-text"></i> Reports</a></li>
+      <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+    </ul>
+    <button class="btn btn-outline-light mt-3 ms-3" id="sidebarToggle"><i class="bi bi-chevron-left"></i></button>
+  </div>
+
+  <nav class="navbar navbar-expand-lg top-navbar" id="topNavbar">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Admin Dashboard</a>
+    </div>
+  </nav>
+
+  <main class="main-content" id="mainContent">
+    <!-- KPI Cards -->
+    <div class="row g-3">
+      <div class="col-12 col-sm-6 col-lg-3" id="card-total-tourists"></div>
+      <div class="col-12 col-sm-6 col-lg-3" id="card-active-tourists"></div>
+      <div class="col-12 col-sm-6 col-lg-3" id="card-missing-tourists"></div>
+      <div class="col-12 col-sm-6 col-lg-3" id="card-total-alerts"></div>
+      <div class="col-12 col-sm-6 col-lg-3" id="card-sos-alerts"></div>
+      <div class="col-12 col-sm-6 col-lg-3" id="card-total-incidents"></div>
+      <div class="col-12 col-sm-6 col-lg-3" id="card-high-risk-zones"></div>
+      <div class="col-12 col-sm-6 col-lg-3" id="card-safety-score"></div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row g-3 mt-4">
+      <div class="col-12 col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Monthly Tourist Registration</h5>
+            <div id="chart-registration"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Alert Distribution</h5>
+            <div id="chart-alerts"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Incident Trend</h5>
+            <div id="chart-incidents"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Alerts Table -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <h4>Recent Alerts</h4>
+        <div class="table-responsive">
+          <table class="table table-striped" id="table-alerts">
+            <thead>
+              <tr>
+                <th>Alert ID</th>
+                <th>Tourist Name</th>
+                <th>Alert Type</th>
+                <th>Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Incidents Table -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <h4>Recent Incidents</h4>
+        <div class="table-responsive">
+          <table class="table table-striped" id="table-incidents">
+            <thead>
+              <tr>
+                <th>Incident ID</th>
+                <th>Tourist Name</th>
+                <th>Description</th>
+                <th>Risk Level</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Custom JS -->
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  <script>
+    // Sidebar toggle logic
+    document.getElementById('sidebarToggle').addEventListener('click', function () {
+      const sidebar = document.getElementById('sidebar');
+      const topNav = document.getElementById('topNavbar');
+      const main = document.getElementById('mainContent');
+      sidebar.classList.toggle('collapsed');
+      topNav.classList.toggle('collapsed');
+      main.classList.toggle('collapsed');
+    });
+  </script>
+</body>
+</html>
