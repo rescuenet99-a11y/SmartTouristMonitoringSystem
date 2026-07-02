@@ -1,0 +1,64 @@
+body{
+    background:#eef2f7;
+    font-family:'Segoe UI',sans-serif;
+}
+
+.navbar{
+    background:#0f172a;
+}
+
+.navbar-brand{
+    color:white !important;
+    font-weight:bold;
+    font-size:24px;
+}
+
+.dashboard-card{
+    border:none;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.15);
+    margin-bottom:15px;
+}
+
+.card-title{
+    font-size:14px;
+    color:#555;
+}
+
+.card-value{
+    font-size:24px;
+    font-weight:bold;
+    color:#0d6efd;
+}
+
+#map{
+    height:650px;
+    border-radius:15px;
+}
+
+.status-online{
+    color:#16a34a;
+    font-weight:bold;
+}
+
+.status-offline{
+    color:red;
+}
+
+.info-icon{
+    font-size:25px;
+}
+
+.alert-box{
+    background:white;
+    border-radius:15px;
+    padding:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.15);
+}
+
+.alert-item{
+    padding:10px;
+    border-left:5px solid #0d6efd;
+    margin-bottom:10px;
+    background:#f8f9fa;
+}

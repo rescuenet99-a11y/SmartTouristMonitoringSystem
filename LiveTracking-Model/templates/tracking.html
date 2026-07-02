@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Tourist Safety Monitoring</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Leaflet -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/tracking.css') }}">
+
+    <!-- Socket -->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
+</head>
+
+<body class="bg-light">
+
+<!-- Navbar -->
+
+<nav class="navbar navbar-expand-lg">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand text-white">
+
+            🛡 Smart Tourist Safety Monitoring System
+
+        </a>
+
+    </div>
+
+</nav>
+
+<div class="container-fluid mt-4">
+
+<div class="row">
+
+<!-- LEFT PANEL -->
+
+<div class="col-lg-3">
+
+<div class="dashboard-card card">
+
+<div class="card-header bg-primary text-white">
+
+👤 Tourist Dashboard
+
+</div>
+
+<div class="card-body">
+
+<p>
+
+<b>Status :</b>
+
+<span id="status" class="status-online">
+
+ONLINE
+
+</span>
+
+</p>
+
+<hr>
+
+<p>Latitude</p>
+
+<h5 id="lat">
+
+0.000000
+
+</h5>
+
+<hr>
+
+<p>Longitude</p>
+
+<h5 id="lng">
+
+0.000000
+
+</h5>
+
+<hr>
+
+<p>Speed</p>
+
+<h5 id="speed">
+
+0 km/h
+
+</h5>
+
+<hr>
+
+<p>Accuracy</p>
+
+<h5 id="accuracy">
+
+0 m
+
+</h5>
+
+<hr>
+
+<p>Risk Level</p>
+
+<h5>
+
+<span id="risk"
+
+class="badge bg-success">
+
+LOW
+
+</span>
+
+</h5>
+
+<hr>
+
+<p>Last Updated</p>
+
+<h6 id="time">
+
+--
+
+</h6>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- RIGHT PANEL -->
+
+<div class="col-lg-9">
+
+<div class="dashboard-card card">
+
+<div class="card-header bg-success text-white">
+
+🛰 Live GPS Tracking
+
+</div>
+
+<div class="card-body">
+
+<div id="map"></div>
+
+<!-- Dashboard Cards -->
+
+<div class="row mt-3">
+
+<div class="col-md-4">
+
+<div class="dashboard-card card">
+
+<div class="card-body text-center">
+
+<div class="card-title">
+
+Distance Travelled
+
+</div>
+
+<div id="distance"
+
+class="card-value">
+
+0 KM
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="dashboard-card card">
+
+<div class="card-body text-center">
+
+<div class="card-title">
+
+GPS Status
+
+</div>
+
+<div id="gpsstatus"
+
+class="card-value">
+
+🟢 Active
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="dashboard-card card">
+
+<div class="card-body text-center">
+
+<div class="card-title">
+
+Tourist Status
+
+</div>
+
+<div id="touriststatus"
+
+class="card-value">
+
+SAFE
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Alerts -->
+
+<div class="alert-box mt-3">
+
+<h5>
+
+🚨 Live Alerts
+
+</h5>
+
+<div id="alerts">
+
+<div class="alert-item">
+
+System Started Successfully
+
+</div>
+
+<div class="alert-item">
+
+GPS Connected
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script src="{{ url_for('static', filename='js/tracking.js') }}"></script>
+
+</body>
+
+</html>
