@@ -1,0 +1,519 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+
+    min-height:100vh;
+
+    background:
+    linear-gradient(
+    135deg,
+    #0f172a,
+    #1e3a8a,
+    #2563eb);
+
+    background-attachment:fixed;
+
+}
+
+.navbar{
+
+    background:rgba(13,110,253,.95)!important;
+
+    backdrop-filter:blur(12px);
+
+    box-shadow:0 8px 25px rgba(0,0,0,.15);
+
+}
+
+.navbar-brand{
+
+    font-size:24px;
+
+    font-weight:700;
+
+    letter-spacing:.5px;
+
+}
+
+.nav-link{
+
+    color:white!important;
+
+    font-weight:500;
+
+    transition:.3s;
+
+}
+
+.nav-link:hover{
+
+    transform:translateY(-2px);
+
+    color:#ffe082!important;
+
+}
+
+.container{
+
+    padding-top:40px;
+
+    padding-bottom:40px;
+
+}
+
+.card{
+
+    border:none;
+
+    border-radius:25px;
+
+    background:rgba(255,255,255,.96);
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:0 20px 45px rgba(0,0,0,.25);
+
+    animation:fadeIn .8s ease;
+
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(40px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+.card-body{
+
+    padding:45px;
+
+}
+
+.display-5{
+
+    font-size:70px;
+
+}
+
+h1{
+
+    font-size:40px;
+
+    font-weight:700;
+
+    color:#0d6efd;
+
+}
+
+h3{
+
+    font-weight:600;
+
+}
+
+h4{
+
+    font-weight:600;
+
+}
+
+p{
+
+    font-size:17px;
+
+    color:#666;
+
+}
+
+hr{
+
+    margin:25px 0;
+
+}
+/* ============================= */
+/* FORM LABELS */
+/* ============================= */
+
+.form-label{
+
+    font-weight:600;
+
+    color:#1f2937;
+
+    margin-bottom:8px;
+
+}
+
+.form-label i{
+
+    margin-right:6px;
+
+}
+
+/* ============================= */
+/* INPUTS & SELECT */
+/* ============================= */
+
+.form-control,
+.form-select{
+
+    height:55px;
+
+    border-radius:14px;
+
+    border:2px solid #dbe4f0;
+
+    font-size:16px;
+
+    padding-left:15px;
+
+    transition:.3s;
+
+    box-shadow:none;
+
+}
+
+.form-control:focus,
+.form-select:focus{
+
+    border-color:#0d6efd;
+
+    box-shadow:0 0 10px rgba(13,110,253,.20);
+
+}
+
+.form-control::placeholder{
+
+    color:#9ca3af;
+
+}
+
+/* ============================= */
+/* DISTANCE & TIME BOX */
+/* ============================= */
+
+#distance,
+#travel_time{
+
+    min-height:55px;
+
+    display:flex;
+
+    align-items:center;
+
+    padding-left:15px;
+
+    border-radius:14px;
+
+    border:2px solid #dbe4f0;
+
+    background:#f8fafc;
+
+    font-weight:600;
+
+    color:#0d6efd;
+
+}
+
+/* ============================= */
+/* REGISTER BUTTON */
+/* ============================= */
+
+.btn-primary{
+
+    height:55px;
+
+    border:none;
+
+    border-radius:14px;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    background:
+    linear-gradient(
+    90deg,
+    #2563eb,
+    #0d6efd);
+
+    transition:.3s;
+
+}
+
+.btn-primary:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 15px 25px rgba(37,99,235,.35);
+
+}
+
+/* ============================= */
+/* ALERT BOX */
+/* ============================= */
+
+.alert{
+
+    border-radius:14px;
+
+    font-size:15px;
+
+    border:none;
+
+}
+
+/* ============================= */
+/* FOOTER */
+/* ============================= */
+
+footer{
+
+    font-size:15px;
+
+    letter-spacing:.5px;
+
+}
+/* ============================= */
+/* CARD HOVER EFFECT */
+/* ============================= */
+
+.card{
+
+    transition:all .35s ease;
+
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 30px 60px rgba(0,0,0,.30);
+
+}
+
+/* ============================= */
+/* INPUT HOVER */
+/* ============================= */
+
+.form-control:hover,
+.form-select:hover{
+
+    border-color:#60a5fa;
+
+}
+
+/* ============================= */
+/* BUTTON ACTIVE */
+/* ============================= */
+
+.btn-primary:active{
+
+    transform:scale(.98);
+
+}
+
+/* ============================= */
+/* CUSTOM SCROLLBAR */
+/* ============================= */
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#e5e7eb;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#2563eb;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#1d4ed8;
+
+}
+
+/* ============================= */
+/* RESPONSIVE DESIGN */
+/* ============================= */
+
+@media(max-width:992px){
+
+.card-body{
+
+padding:35px;
+
+}
+
+.display-5{
+
+font-size:55px;
+
+}
+
+h1{
+
+font-size:34px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.container{
+
+padding:20px;
+
+}
+
+.card-body{
+
+padding:25px;
+
+}
+
+.display-5{
+
+font-size:45px;
+
+}
+
+h1{
+
+font-size:28px;
+
+}
+
+h3{
+
+font-size:22px;
+
+}
+
+.form-control,
+.form-select{
+
+height:50px;
+
+font-size:15px;
+
+}
+
+.btn-primary{
+
+height:52px;
+
+font-size:17px;
+
+}
+
+.navbar-brand{
+
+font-size:20px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.display-5{
+
+font-size:36px;
+
+}
+
+h1{
+
+font-size:24px;
+
+}
+
+h3{
+
+font-size:20px;
+
+}
+
+.card{
+
+border-radius:18px;
+
+}
+
+.card-body{
+
+padding:18px;
+
+}
+
+}
+
+/* ============================= */
+/* OPTIONAL DARK MODE */
+/* ============================= */
+
+.dark-mode{
+
+background:#0f172a;
+
+color:white;
+
+}
+
+.dark-mode .card{
+
+background:#1e293b;
+
+color:white;
+
+}
+
+.dark-mode .form-control,
+.dark-mode .form-select{
+
+background:#334155;
+
+color:white;
+
+border-color:#475569;
+
+}
+
+.dark-mode .form-control::placeholder{
+
+color:#cbd5e1;
+
+}
