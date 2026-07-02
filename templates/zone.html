@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Tourist Safety Monitoring</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="result-card">
+
+        <div class="text-center mb-4">
+
+            <i class="bi bi-geo-alt-fill text-danger" style="font-size:70px;"></i>
+
+            <h1 class="title mt-3">
+                Smart Tourist Safety Monitoring
+            </h1>
+
+            <p class="text-muted">
+                Module 4 - Geo-Fencing & Restricted Zone Detection
+            </p>
+
+        </div>
+
+        <form action="/check_zone" method="POST">
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Latitude
+                </label>
+
+                <input
+                    type="number"
+                    step="any"
+                    class="form-control form-control-lg"
+                    id="latitude"
+                    name="latitude"
+                    placeholder="Enter Latitude"
+                    required>
+
+            </div>
+
+            <div class="mb-4">
+
+                <label class="form-label">
+                    Longitude
+                </label>
+
+                <input
+                    type="number"
+                    step="any"
+                    class="form-control form-control-lg"
+                    id="longitude"
+                    name="longitude"
+                    placeholder="Enter Longitude"
+                    required>
+
+            </div>
+
+            <div class="d-grid gap-3">
+
+                <button
+                    type="button"
+                    class="btn btn-success btn-lg"
+                    onclick="getLocation()">
+
+                    <i class="bi bi-crosshair"></i>
+                    Get My Current Location
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-lg">
+
+                    <i class="bi bi-search"></i>
+                    Check Tourist Zone
+
+                </button>
+
+            </div>
+
+        </form>
+
+        <hr class="mt-5">
+
+        <div class="text-center">
+
+            <h5 class="text-primary">
+                Sample Test Coordinates
+            </h5>
+
+            <table class="table table-bordered mt-3">
+
+                <tr>
+                    <th>Zone</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                </tr>
+
+                <tr>
+                    <td>Forest Area</td>
+                    <td>12.9215</td>
+                    <td>80.1270</td>
+                </tr>
+
+                <tr>
+                    <td>Lake Area</td>
+                    <td>12.9230</td>
+                    <td>80.1300</td>
+                </tr>
+
+                <tr>
+                    <td>Temple Area</td>
+                    <td>12.9200</td>
+                    <td>80.1250</td>
+                </tr>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function getLocation(){
+
+    if(navigator.geolocation){
+
+        navigator.geolocation.getCurrentPosition(
+
+            function(position){
+
+                document.getElementById("latitude").value =
+                position.coords.latitude;
+
+                document.getElementById("longitude").value =
+                position.coords.longitude;
+
+            },
+
+            function(error){
+
+                alert("Unable to fetch your location. Please allow location access.");
+
+            }
+
+        );
+
+    }
+
+    else{
+
+        alert("Geolocation is not supported by your browser.");
+
+    }
+
+}
+
+</script>
+
+</body>
+
+</html>
