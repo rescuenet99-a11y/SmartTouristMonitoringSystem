@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Emergency Center – Smart Tourist Safety</title>
+  <meta name="description" content="Central emergency hub for tourist safety monitoring, SOS, live tracking, alerts and incident reports." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',system-ui,sans-serif;background:#112229;color:#212529;min-height:100vh}
+    /* Animated gradient background */
+    .bg-mesh{display:none}
+
+    .page-wrapper{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+
+    /* Navbar */
+    .top-bar {
+      background: rgba(6, 7, 10, 0.7);
+      backdrop-filter: blur(20px) saturate(1.6);
+      -webkit-backdrop-filter: blur(20px) saturate(1.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.9rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .top-bar .brand {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+    .top-bar .brand i {
+      color: #6366f1;
+      margin-right: 0.45rem;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.4rem 0.8rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.25s ease;
+    }
+    .back-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateX(-2px);
+    }
+
+    /* Hero */
+    .hero-section{text-align:center;padding:1.5rem 1rem 1rem}
+    .hero-section h1{font-weight:800;font-size:2.6rem;color:#2563EB;margin-bottom:.75rem}
+    .hero-section p{max-width:560px;margin:0 auto;color:#4b5563;font-size:1.05rem;line-height:1.7}
+
+    /* Cards grid */
+    .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;max-width:1000px;margin:1.5rem auto 1.5rem;padding:0}
+    .nav-card{position:relative;background:#f8f9fa;border:1px solid #e5e7eb;border-radius:20px;padding:2rem 1.75rem;text-decoration:none;color:#1f2937;overflow:hidden;transition:transform .25s,box-shadow .25s,border-color .25s}
+    .nav-card:hover{transform:translateY(-6px);box-shadow:0 8px 30px rgba(0,0,0,0.08);border-color:#cbd5e1;color:#111827}
+    .nav-card .card-glow{display:none}
+    .nav-card .icon-wrap{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1rem;color:#fff}
+    .nav-card h3{font-weight:700;font-size:1.15rem;margin-bottom:.45rem}
+    .nav-card p{color:#4b5563;font-size:.88rem;margin:0;line-height:1.55}
+    .nav-card .arrow{position:absolute;bottom:1.25rem;right:1.25rem;font-size:1.2rem;color:#9ca3af;transition:color .2s,transform .2s}
+    .nav-card:hover .arrow{color:#2563EB;transform:translateX(4px)}
+
+    /* Colors per card */
+    .card-sos .icon-wrap{background:#DC2626}
+    .card-location .icon-wrap{background:#16A34A}
+    .card-family .icon-wrap{background:#0EA5E9}
+    .card-alerts .icon-wrap{background:#F59E0B}
+    .card-notif .icon-wrap{background:#8B5CF6}
+    .card-reports .icon-wrap{background:#64748B}
+
+    .main-container-card {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      color: #212529;
+    }
+
+    /* Footer */
+    footer{text-align:center;padding:2rem 1rem;color:#475569;font-size:.82rem;border-top:1px solid rgba(255,255,255,.05)}
+
+    /* Pulse live dot */
+    .live-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block;margin-right:.4rem;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+  </style>
+</head>
+<body>
+  <!-- Animated mesh background -->
+  <div class="bg-mesh"><span></span><span></span><span></span></div>
+
+  <div class="page-wrapper">
+    <!-- Top Bar -->
+    <nav class="top-bar">
+      <div class="container d-flex align-items-center justify-content-between">
+        <a class="brand" href="index.html"><i class="bi bi-shield-check"></i>Smart Tourist Safety</a>
+        <div class="d-flex align-items-center gap-3">
+          <span class="live-dot"></span><span style="font-size:.85rem;color:#22c55e;font-weight:600">System Online</span>
+          <a href="index.html" class="back-btn"><i class="bi bi-arrow-left"></i> Home</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="main-container-card">
+      <!-- Hero -->
+      <section class="hero-section">
+        <h1>Emergency Center</h1>
+        <p>Your centralized command hub for real-time safety monitoring, emergency response, and incident management.</p>
+      </section>
+
+      <!-- Navigation Cards -->
+      <section class="cards-grid">
+        <a href="sos.html" class="nav-card card-sos" id="nav-sos">
+          <div class="icon-wrap"><i class="bi bi-telephone-forward"></i></div>
+          <h3>SOS Emergency</h3>
+          <p>Trigger an instant SOS alert to notify emergency responders and your family contacts.</p>
+          <i class="bi bi-arrow-right arrow"></i>
+        </a>
+
+        <a href="live-location.html" class="nav-card card-location" id="nav-location">
+          <div class="icon-wrap"><i class="bi bi-geo-alt-fill"></i></div>
+          <h3>Live Location</h3>
+          <p>Share your real-time GPS location with emergency services and trusted contacts.</p>
+          <i class="bi bi-arrow-right arrow"></i>
+        </a>
+
+        <a href="family-tracking.html" class="nav-card card-family" id="nav-family">
+          <div class="icon-wrap"><i class="bi bi-people-fill"></i></div>
+          <h3>Family Tracking</h3>
+          <p>Monitor the whereabouts of family members and receive proximity alerts.</p>
+          <i class="bi bi-arrow-right arrow"></i>
+        </a>
+
+        <a href="alert-management.html" class="nav-card card-alerts" id="nav-alerts">
+          <div class="icon-wrap"><i class="bi bi-exclamation-triangle-fill"></i></div>
+          <h3>Alert Management</h3>
+          <p>Configure and manage safety alerts, geo-fence warnings, and threat levels.</p>
+          <i class="bi bi-arrow-right arrow"></i>
+        </a>
+
+        <a href="notification-center.html" class="nav-card card-notif" id="nav-notifications">
+          <div class="icon-wrap"><i class="bi bi-bell-fill"></i></div>
+          <h3>Notification Center</h3>
+          <p>View all system notifications, push alerts, and broadcast messages in one place.</p>
+          <i class="bi bi-arrow-right arrow"></i>
+        </a>
+
+        <a href="incident-reports.html" class="nav-card card-reports" id="nav-reports">
+          <div class="icon-wrap"><i class="bi bi-file-earmark-bar-graph-fill"></i></div>
+          <h3>Incident Reports</h3>
+          <p>File, review, and track incident reports with photos, timestamps, and status updates.</p>
+          <i class="bi bi-arrow-right arrow"></i>
+        </a>
+      </section>
+    </div>
+
+    <footer>&copy; 2026 Smart Tourist Safety Monitoring System. All rights reserved.</footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

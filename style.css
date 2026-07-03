@@ -1,0 +1,197 @@
+/* Existing content (unchanged) */
+/* style.css - Custom styling for Emergency Center page */
+
+:root {
+  /* Primary palette */
+  --color-primary: #2563EB;   /* blue */
+  --color-emergency: #DC2626; /* red */
+  --color-success: #16A34A;   /* green */
+  --color-warning: #F59E0B;   /* amber */
+  --color-info: #0EA5E9;      /* cyan */
+  --color-bg-light: #f8f9fa;  /* light gray */
+  --radius-card: 18px;
+  --transition-speed: 0.2s;
+}
+
+/* Global typography */
+body {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  color: #212529;
+  background-color: #fff;
+}
+
+/* Rounded card with subtle shadow */
+.rounded-card {
+  border-radius: var(--radius-card) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.rounded-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Ripple effect for buttons */
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ripple::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255,255,255,0.3);
+  border-radius: 100%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease-out, height 0.4s ease-out;
+}
+
+.btn-ripple:active::after {
+  width: 200px;
+  height: 200px;
+  transition: 0s;
+}
+
+/* Override Bootstrap button outline primary for consistency */
+.btn-outline-primary {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+/* Hero / Status card */
+.status-card {
+  background: #fff;
+  border-radius: var(--radius-card);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.status-card .status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-success);
+}
+
+.status-card .status-badge .bi {
+  font-size: 1.4rem;
+}
+
+/* Statistic cards */
+.stats-card {
+  background-color: #fff;
+  border-radius: var(--radius-card);
+  padding: 2rem 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  margin: 2rem 0;
+  padding-left: 2rem;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #dee2e6;
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -0.3rem;
+  top: 0.2rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+.timeline-item .time {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+.timeline-item .content {
+  margin-top: 0.2rem;
+}
+
+/* Safety tip cards */
+.tip-card {
+  background: #fff;
+  border-radius: var(--radius-card);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform var(--transition-speed) ease;
+}
+.tip-card:hover {
+  transform: translateY(-4px);
+}
+.tip-card .bi {
+  font-size: 2rem;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+/* Fade-in animation for sections */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.8s forwards;
+  animation-delay: var(--animation-delay, 0s);
+}
+@keyframes fadeIn {
+  to { opacity: 1; transform: none; }
+}
+
+/* Sticky navbar */
+.sticky-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .navbar .badge {
+    margin-top: 0.5rem;
+  }
+}
+
+/* End of custom styles */
+
+/* Footer subtle styling */
+footer {
+  font-size: 0.875rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .navbar .badge {
+    margin-top: 0.5rem;
+  }
+}

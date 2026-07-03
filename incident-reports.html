@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Incident Reports – Smart Tourist Safety</title>
+  <meta name="description" content="File, review, and track incident reports with photos, timestamps, and status updates." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',system-ui,sans-serif;background:#112229;color:#212529;min-height:100vh}
+    .bg-mesh{display:none}
+
+    .page-wrapper{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+    .top-bar {
+      background: rgba(6, 7, 10, 0.7);
+      backdrop-filter: blur(20px) saturate(1.6);
+      -webkit-backdrop-filter: blur(20px) saturate(1.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.9rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .top-bar .brand {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+    .top-bar .brand i {
+      color: #94a3b8;
+      margin-right: 0.45rem;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.4rem 0.8rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.25s ease;
+    }
+    .back-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateX(-2px);
+    }
+
+    .content{flex:1;padding:2rem 1rem}
+    h1{font-weight:800;font-size:2rem;text-align:center;margin-bottom:.5rem;color:#2563EB}
+    .subtitle{text-align:center;color:#4b5563;max-width:500px;margin:0 auto 1.5rem;line-height:1.6}
+
+    /* New report button */
+    .new-report-bar{max-width:850px;margin:0 auto 1.5rem;display:flex;justify-content:flex-end}
+    .new-report-btn{background:#2563EB;color:#fff;border:none;padding:.6rem 1.4rem;border-radius:12px;font-weight:600;font-size:.88rem;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 15px rgba(37,99,235,0.2)}
+    .new-report-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(37,99,235,0.3)}
+
+    /* Report table */
+    .report-table{max-width:850px;margin:0 auto;border-radius:16px;overflow:hidden;border:1px solid #e5e7eb}
+    .report-table table{width:100%;border-collapse:collapse}
+    .report-table thead{background:#f8f9fa}
+    .report-table th{padding:.85rem 1.25rem;text-align:left;font-size:.78rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e5e7eb}
+    .report-table td{padding:.85rem 1.25rem;font-size:.88rem;border-bottom:1px solid #e5e7eb;color:#1f2937}
+    .report-table tbody tr{transition:background .2s}
+    .report-table tbody tr:hover{background:#f8f9fa}
+    .report-table tbody tr:last-child td{border-bottom:none}
+
+    .report-id{color:#2563EB;font-weight:700;font-size:.82rem}
+    .report-type{display:inline-flex;align-items:center;gap:.3rem;font-weight:600;font-size:.82rem;color:#1f2937}
+    .type-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+    .dot-emergency{background:#ef4444}
+    .dot-safety{background:#f59e0b}
+    .dot-medical{background:#22c55e}
+    .dot-theft{background:#a855f7}
+    .dot-other{background:#64748b}
+
+    .status-badge{font-size:.72rem;font-weight:700;padding:.25rem .6rem;border-radius:6px;text-transform:uppercase;letter-spacing:.3px}
+    .st-open{background:#fef2f2;color:#b91c1c;border:1px solid #fca5a5}
+    .st-progress{background:#fffbeb;color:#d97706;border:1px solid #fde68a}
+    .st-resolved{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
+    .st-closed{background:#f1f5f9;color:#475569;border:1px solid #cbd5e1}
+
+    .priority-indicator{font-weight:700;font-size:.82rem}
+    .pri-high{color:#ef4444}
+    .pri-medium{color:#d97706}
+    .pri-low{color:#16a34a}
+
+    /* Summary cards */
+    .summary-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;max-width:850px;margin:0 auto 2rem}
+    .summary-card{background:#f8f9fa;border:1px solid #e5e7eb;border-radius:16px;padding:1.25rem;text-align:center}
+    .summary-card .num{font-size:1.8rem;font-weight:800}
+    .summary-card .label{font-size:.78rem;color:#4b5563;margin-top:.2rem}
+
+    .main-container-card {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      color: #212529;
+    }
+
+    footer{text-align:center;padding:2rem 1rem;color:#475569;font-size:.82rem;border-top:1px solid rgba(255,255,255,.05);margin-top:auto}
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"><span></span><span></span></div>
+  <div class="page-wrapper">
+    <nav class="top-bar">
+      <div class="container d-flex align-items-center justify-content-between">
+        <a class="brand" href="emergency-center.html"><i class="bi bi-file-earmark-bar-graph-fill"></i>Incident Reports</a>
+        <a href="emergency-center.html" class="back-btn"><i class="bi bi-arrow-left"></i> Back to Emergency Center</a>
+      </div>
+    </nav>
+
+    <div class="content">
+      <div class="main-container-card">
+        <h1>Incident Reports</h1>
+        <p class="subtitle">Track and manage all filed incidents with detailed status tracking and priority levels.</p>
+
+        <!-- Summary -->
+        <div class="summary-row">
+          <div class="summary-card">
+            <div class="num" style="color:#ef4444" id="openCount">0</div>
+            <div class="label">Open Incidents</div>
+          </div>
+          <div class="summary-card">
+            <div class="num" style="color:#d97706" id="progressCount">0</div>
+            <div class="label">In Progress</div>
+          </div>
+          <div class="summary-card">
+            <div class="num" style="color:#16a34a" id="resolvedCount">0</div>
+            <div class="label">Resolved Today</div>
+          </div>
+          <div class="summary-card">
+            <div class="num" style="color:#475569">2.4h</div>
+            <div class="label">Avg. Response</div>
+          </div>
+        </div>
+
+        <div class="new-report-bar">
+          <button class="new-report-btn" data-bs-toggle="modal" data-bs-target="#newReportModal"><i class="bi bi-plus-lg"></i> File New Report</button>
+        </div>
+
+        <!-- Table -->
+        <div class="report-table">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="reportsTableBody">
+              <!-- Loaded dynamically from API -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <footer>&copy; 2026 Smart Tourist Safety Monitoring System</footer>
+  </div>
+
+  <!-- New Report Modal -->
+  <div class="modal fade" id="newReportModal" tabindex="-1" aria-labelledby="newReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="background: #111827; border: 1px solid rgba(255,255,255,.08); color: #f3f4f6;">
+        <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,.08);">
+          <h5 class="modal-title" id="newReportModalLabel" style="font-weight: 700;">File New Incident Report</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="newReportForm">
+            <div class="mb-3">
+              <label for="reportType" class="form-label" style="font-size: .85rem; font-weight: 600;">Incident Type</label>
+              <select class="form-select" id="reportType" style="background: #1f2937; color: #fff; border: 1px solid rgba(255,255,255,.1);">
+                <option>Emergency</option>
+                <option>Safety</option>
+                <option>Medical</option>
+                <option>Theft</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="reportDesc" class="form-label" style="font-size: .85rem; font-weight: 600;">Description</label>
+              <textarea class="form-control" id="reportDesc" rows="3" placeholder="Describe the incident in detail..." required style="background: #1f2937; color: #fff; border: 1px solid rgba(255,255,255,.1);"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="reportPriority" class="form-label" style="font-size: .85rem; font-weight: 600;">Priority</label>
+              <select class="form-select" id="reportPriority" style="background: #1f2937; color: #fff; border: 1px solid rgba(255,255,255,.1);">
+                <option>High</option>
+                <option>Medium</option>
+                <option>Low</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" style="background: #2563EB; border: none; padding: .6rem; font-weight: 600;">Submit Report</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const API_BASE = window.location.port === '5000' ? '' : 'http://127.0.0.1:5000';
+
+    async function loadReports() {
+      try {
+        const res = await fetch(`${API_BASE}/api/incidents`);
+        const incidents = await res.json();
+
+        // Calculate counts
+        let open = 0;
+        let progress = 0;
+        let resolved = 0;
+
+        incidents.forEach(inc => {
+          if (inc.status === 'Open') open++;
+          else if (inc.status === 'In Progress') progress++;
+          else if (inc.status === 'Resolved' || inc.status === 'Closed') resolved++;
+        });
+
+        document.getElementById('openCount').textContent = open;
+        document.getElementById('progressCount').textContent = progress;
+        document.getElementById('resolvedCount').textContent = resolved;
+
+        const tbody = document.getElementById('reportsTableBody');
+        tbody.innerHTML = incidents.map(inc => `
+          <tr>
+            <td class="report-id">#${inc.id}</td>
+            <td><span class="report-type"><span class="type-dot ${inc.type_class}"></span>${inc.type}</span></td>
+            <td>${inc.desc}</td>
+            <td><span class="priority-indicator ${inc.priority_class}">${inc.priority}</span></td>
+            <td><span class="status-badge ${inc.status_class}">${inc.status}</span></td>
+            <td>${inc.time}</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error("Error loading incidents:", err);
+      }
+    }
+
+    document.getElementById('newReportForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const type = document.getElementById('reportType').value;
+      const desc = document.getElementById('reportDesc').value;
+      const priority = document.getElementById('reportPriority').value;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/incidents`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type, desc, priority })
+        });
+        if (res.ok) {
+          // Reset fields
+          document.getElementById('reportDesc').value = '';
+          // Close modal
+          bootstrap.Modal.getOrCreateInstance(document.getElementById('newReportModal')).hide();
+          // Reload data
+          loadReports();
+        }
+      } catch (err) {
+        console.error("Error submitting incident report:", err);
+      }
+    });
+
+    // Initialize
+    loadReports();
+    setInterval(loadReports, 5000);
+  </script>
+</body>
+</html>

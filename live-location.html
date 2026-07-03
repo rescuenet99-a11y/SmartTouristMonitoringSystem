@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Live Location – Smart Tourist Safety</title>
+  <meta name="description" content="Real-time GPS location sharing for tourist safety monitoring." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',system-ui,sans-serif;background:#112229;color:#212529;min-height:100vh}
+    .bg-mesh{display:none}
+
+    .page-wrapper{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+    .top-bar {
+      background: rgba(6, 7, 10, 0.7);
+      backdrop-filter: blur(20px) saturate(1.6);
+      -webkit-backdrop-filter: blur(20px) saturate(1.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.9rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1030;
+    }
+    .top-bar .brand {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+    .top-bar .brand i {
+      color: #22c55e;
+      margin-right: 0.45rem;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.4rem 0.8rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.25s ease;
+    }
+    .back-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateX(-2px);
+    }
+
+    .content{flex:1;padding:2rem 1rem}
+
+    h1{font-weight:800;font-size:2rem;text-align:center;margin-bottom:.5rem;color:#2563EB}
+    .subtitle{text-align:center;color:#4b5563;max-width:500px;margin:0 auto 2rem;line-height:1.6}
+
+    /* Map container styling */
+    .map-container{max-width:900px;margin:0 auto 2rem;border-radius:16px;overflow:hidden;border:1px solid #e5e7eb;position:relative;height:380px;background:#f3f4f6}
+
+    /* Location info */
+    .loc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;max-width:900px;margin:0 auto 2rem}
+    .loc-card{background:#f8f9fa;border:1px solid #e5e7eb;border-radius:16px;padding:1.25rem}
+    .loc-card h4{font-size:.8rem;color:#4b5563;font-weight:600;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.5px}
+    .loc-card p{margin:0;font-weight:700;font-size:1.05rem;color:#1f2937}
+    .loc-card .value-green{color:#16A34A}
+    .loc-card .value-blue{color:#2563EB}
+
+    /* Toggle */
+    .sharing-toggle{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;background:#f8f9fa;border:1px solid #e5e7eb;border-radius:16px;padding:1.25rem 1.75rem}
+    .sharing-toggle h3{font-size:1rem;font-weight:700;margin:0;color:#1f2937}
+    .sharing-toggle p{margin:0;color:#4b5563;font-size:.85rem}
+
+    .main-container-card {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      color: #212529;
+    }
+    .toggle-switch{width:52px;height:28px;background:#334155;border-radius:14px;position:relative;cursor:pointer;transition:background .3s}
+    .toggle-switch.active{background:#22c55e}
+    .toggle-switch::after{content:'';position:absolute;width:22px;height:22px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left .3s}
+    .toggle-switch.active::after{left:27px}
+
+    .live-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block;margin-right:.35rem;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+
+    footer{text-align:center;padding:2rem 1rem;color:#475569;font-size:.82rem;border-top:1px solid rgba(255,255,255,.05);margin-top:auto}
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"><span></span><span></span></div>
+  <div class="page-wrapper">
+    <nav class="top-bar">
+      <div class="container d-flex align-items-center justify-content-between">
+        <a class="brand" href="emergency-center.html"><i class="bi bi-geo-alt-fill"></i>Live Location</a>
+        <a href="emergency-center.html" class="back-btn"><i class="bi bi-arrow-left"></i> Back to Emergency Center</a>
+      </div>
+    </nav>
+
+    <div class="content">
+      <div class="main-container-card">
+        <h1>Live Location Tracking</h1>
+        <p class="subtitle">Your real-time GPS position is shared with emergency services and trusted contacts.</p>
+
+        <!-- Map -->
+        <div class="map-container" style="position: relative;">
+          <div id="map" style="height: 100%; width: 100%; z-index: 1;"></div>
+        </div>
+
+        <!-- Location Details -->
+        <div class="loc-grid">
+          <div class="loc-card">
+            <h4>Latitude</h4>
+            <p class="value-green" id="lat">48.8584°N</p>
+          </div>
+          <div class="loc-card">
+            <h4>Longitude</h4>
+            <p class="value-green" id="lng">2.2945°E</p>
+          </div>
+          <div class="loc-card">
+            <h4>Accuracy</h4>
+            <p class="value-blue">±3m</p>
+          </div>
+          <div class="loc-card">
+            <h4>Last Updated</h4>
+            <p class="value-blue" id="lastUpdate">Just now</p>
+          </div>
+        </div>
+
+        <!-- Sharing Toggle -->
+        <div class="sharing-toggle">
+          <div>
+            <h3>Location Sharing</h3>
+            <p>Share your real-time location with family &amp; emergency contacts</p>
+          </div>
+          <div class="toggle-switch active" id="shareToggle" onclick="this.classList.toggle('active')"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>&copy; 2026 Smart Tourist Safety Monitoring System</footer>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const API_BASE = window.location.port === '5000' ? '' : 'http://127.0.0.1:5000';
+    let baseLat = 48.8584;
+    let baseLng = 2.2945;
+    let isRealGPS = false;
+
+    // Initialize Leaflet Map
+    const map = L.map('map', {
+      zoomControl: false
+    }).setView([baseLat, baseLng], 16);
+
+    // Standard tiles to match solid normal theme
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19
+    }).addTo(map);
+
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+    // Add marker
+    const marker = L.marker([baseLat, baseLng]).addTo(map);
+    marker.bindPopup("<div style='color: #0b0f1a; font-weight: 700; font-family: sans-serif; font-size: 0.85rem;'><span class='live-dot'></span>Simulated Location</div>").openPopup();
+
+    async function updateLocationOnBackend(lat, lng, accuracyVal) {
+      try {
+        const res = await fetch(`${API_BASE}/api/location`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            lat: `${lat.toFixed(4)}°${lat >= 0 ? 'N' : 'S'}`,
+            lng: `${lng.toFixed(4)}°${lng >= 0 ? 'E' : 'W'}`
+          })
+        });
+        const data = await res.json();
+        document.getElementById('lat').textContent = data.lat;
+        document.getElementById('lng').textContent = data.lng;
+        document.getElementById('lastUpdate').textContent = data.last_updated;
+
+        // Display accuracy value dynamically
+        const accElement = document.querySelector('.loc-card:nth-child(3) p');
+        if (accElement) {
+          accElement.textContent = accuracyVal ? `±${Math.round(accuracyVal)}m` : "±3m";
+        }
+
+        // Sync real map coordinates
+        if (marker && map) {
+          marker.setLatLng([lat, lng]);
+          map.panTo([lat, lng]);
+
+          // Update marker popup based on location type
+          const label = isRealGPS ? "Real GPS Active" : "Simulated Walk";
+          marker.getPopup().setContent(`<div style='color: #0b0f1a; font-weight: 700; font-family: sans-serif; font-size: 0.85rem;'><span style='width: 8px; height: 8px; background: ${isRealGPS ? '#10b981' : '#22c55e'}; border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 2s infinite;'></span>${label}</div>`);
+        }
+      } catch (err) {
+        console.error("Error updating location:", err);
+      }
+    }
+
+    // Try to watch real device position using browser Geolocation API
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition((position) => {
+        isRealGPS = true;
+        baseLat = position.coords.latitude;
+        baseLng = position.coords.longitude;
+        
+        const sharingLabel = document.querySelector('.sharing-toggle p');
+        if (sharingLabel) {
+          sharingLabel.textContent = "Real-time device hardware GPS location sharing active";
+        }
+        
+        updateLocationOnBackend(baseLat, baseLng, position.coords.accuracy);
+      }, (error) => {
+        console.warn("Real GPS access denied/failed, fallback to walk simulation.", error);
+      }, {
+        enableHighAccuracy: true,
+        maximumAge: 5000,
+        timeout: 10000
+      });
+    }
+
+    // Initialize
+    updateLocationOnBackend(baseLat, baseLng, 3);
+
+    // Simulate tourist walking if real GPS is not authorized/active
+    setInterval(() => {
+      if (!isRealGPS) {
+        if (document.getElementById('shareToggle').classList.contains('active')) {
+          baseLat += (Math.random() - 0.5) * 0.0001;
+          baseLng += (Math.random() - 0.5) * 0.0001;
+          updateLocationOnBackend(baseLat, baseLng, 3);
+        } else {
+          document.getElementById('lastUpdate').textContent = "Paused (Sharing Off)";
+        }
+      }
+    }, 5000);
+  </script>
+</body>
+</html>

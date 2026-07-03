@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SOS Emergency – Smart Tourist Safety</title>
+  <meta name="description" content="Trigger an instant SOS emergency alert to notify responders and family contacts." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',system-ui,sans-serif;background:#112229;color:#212529;min-height:100vh;overflow-x:hidden}
+    
+    /* Premium Background Blobs */
+    .bg-mesh{display:none}
+
+    /* Grain Overlay for editorial premium feel */
+    .bg-mesh::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    .page-wrapper{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+    .top-bar {
+      background: rgba(6, 7, 10, 0.7);
+      backdrop-filter: blur(20px) saturate(1.6);
+      -webkit-backdrop-filter: blur(20px) saturate(1.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.9rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .top-bar .brand {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+    }
+    .top-bar .brand i {
+      color: #ef4444;
+      margin-right: 0.5rem;
+      animation: pulseScale 2s infinite;
+    }
+    @keyframes pulseScale {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.4rem 0.8rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.25s ease;
+    }
+    .back-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateX(-2px);
+    }
+
+    .content{flex:1;padding:3rem 0;display:flex;align-items:center}
+    
+    h1{font-weight:900;font-size:2.5rem;letter-spacing:-1px;margin-bottom:.5rem;color:#DC2626}
+    .subtitle{color:#4b5563;max-width:540px;margin-bottom:2rem;line-height:1.6}
+
+    /* SOS Button */
+    .sos-container-box{display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:2rem}
+    .sos-ring{position:relative;width:240px;height:240px;margin-bottom:1.5rem}
+    .sos-ring::before,.sos-ring::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid rgba(239,68,68,.25);pointer-events:none}
+    .sos-ring::before{animation:ringPulse 2s ease-out infinite}
+    .sos-ring::after{animation:ringPulse 2s ease-out infinite 1s}
+    @keyframes ringPulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.6);opacity:0}}
+
+    .sos-btn{width:180px;height:180px;border-radius:50%;border:none;background:#DC2626;color:#fff;font-size:2.5rem;font-weight:900;letter-spacing:1px;cursor:pointer;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 4px 20px rgba(239,68,68,.3),inset 0 -4px 12px rgba(0,0,0,.15);transition:all .2s cubic-bezier(0.175,0.885,0.32,1.275)}
+    .sos-btn:hover{transform:translate(-50%,-50%) scale(1.08);box-shadow:0 8px 30px rgba(239,68,68,.4),inset 0 -4px 12px rgba(0,0,0,.15)}
+    .sos-btn:active{transform:translate(-50%,-50%) scale(.95)}
+    .sos-btn.activated{background:#16A34A;box-shadow:0 4px 20px rgba(34,197,94,.3),inset 0 -4px 12px rgba(0,0,0,.15)}
+
+    /* Info cards */
+    .info-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.75rem;width:100%}
+    .info-box{background:#f8f9fa;border:1px solid #e5e7eb;border-radius:16px;padding:1rem;}
+    .info-box h4{font-size:.75rem;color:#4b5563;font-weight:700;margin-bottom:.25rem;text-transform:uppercase;letter-spacing:0.5px}
+    .info-box p{margin:0;font-size:1rem;font-weight:700;color:#1f2937}
+
+    /* ── Passport Card Display ── */
+    .passport-container{perspective:1000px;margin-bottom:2rem}
+    .passport-card{
+      background:#ffffff;
+      border:1px solid #e5e7eb;
+      border-radius:24px;
+      padding:2rem;
+      position:relative;
+      box-shadow:0 10px 30px rgba(0,0,0,0.05);
+      color:#1f2937;
+      animation:floatCard 5s ease-in-out infinite;
+      transition:transform 0.4s ease,border-color 0.4s ease;
+      transform-style:preserve-3d;
+    }
+    .passport-card:hover{
+      transform:rotateY(8deg) rotateX(4deg) scale(1.02);
+      border-color:#cbd5e1;
+    }
+    @keyframes floatCard{
+      0%,100%{transform:translateY(0) rotate(0.5deg)}
+      50%{transform:translateY(-12px) rotate(-0.5deg)}
+    }
+    .passport-card::after {
+      display:none;
+    }
+
+    .passport-header{border-bottom:1px dashed #cbd5e1;padding-bottom:0.75rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center}
+    .passport-logo{font-size:1.1rem;font-weight:900;color:#D97706;letter-spacing:1px;text-transform:uppercase}
+    .passport-emblem{font-size:2.2rem;color:#D97706;opacity:.85}
+    
+    .passport-body{display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:center}
+    .passport-photo{
+      width:85px;
+      height:105px;
+      border-radius:12px;
+      background:#f8f9fa;
+      border:1.5px solid #cbd5e1;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      position:relative;
+    }
+    .passport-photo i{font-size:2.2rem;color:#9ca3af}
+    .passport-photo::after{content:'SECURE ID';position:absolute;bottom:4px;font-size:0.55rem;font-weight:800;color:#D97706;letter-spacing:1.5px;opacity:.7}
+    
+    .passport-details{display:grid;gap:0.4rem;text-align:left}
+    .passport-field{font-size:0.65rem;text-transform:uppercase;color:#475569;font-weight:800;margin:0;letter-spacing:0.5px}
+    .passport-value{font-size:0.9rem;font-weight:700;color:#1f2937;margin:0 0 0.25rem 0}
+    
+    .passport-stamp-zone{margin-top:1.5rem;display:flex;gap:0.6rem;justify-content:flex-start;flex-wrap:wrap}
+    .passport-stamp{font-size:0.62rem;font-weight:800;text-transform:uppercase;border:1.5px solid;padding:0.2rem 0.45rem;border-radius:6px;opacity:.85}
+    .stamp-gps{border-color:#10b981;color:#047857;background:#ecfdf5}
+    .stamp-sos{border-color:#ef4444;color:#b91c1c;background:#fef2f2;animation:flashStamp 1.5s ease-in-out infinite alternate}
+    .stamp-verified{border-color:#3b82f6;color:#1d4ed8;background:#eff6ff}
+    @keyframes flashStamp{0%{opacity:.5}100%{opacity:1;filter:drop-shadow(0 0 6px rgba(239,68,68,.4))}}
+
+    /* ── SMS Configuration Card ── */
+    .sms-config-card{background:#ffffff;border:1px solid #e5e7eb;border-radius:20px;padding:1.5rem;box-shadow:0 10px 30px rgba(0,0,0,0.05)}
+    .sms-toggle-container{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e5e7eb;padding-bottom:1rem;margin-bottom:1rem}
+    .sms-toggle-label{display:flex;align-items:center;gap:0.6rem}
+    .sms-toggle-label i{font-size:1.2rem;color:#2563EB}
+    .sms-toggle-title{font-weight:700;font-size:0.95rem;margin:0;color:#1f2937}
+    .sms-toggle-desc{font-size:0.78rem;color:#4b5563;margin:0}
+
+    /* iOS Switch Slider styling */
+    .ios-switch {position:relative;display:inline-block;width:48px;height:26px}
+    .ios-switch input {opacity:0;width:0;height:0}
+    .switch-slider {position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,.15);transition:.3s;border-radius:30px}
+    .switch-slider:before {position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background-color:#fff;transition:.3s;border-radius:50%;box-shadow:0 2px 4px rgba(0,0,0,.25)}
+    input:checked + .switch-slider {background:#ef4444}
+    input:checked + .switch-slider:before {transform:translateX(22px)}
+
+    .sms-contacts-title{font-size:0.8rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.75rem}
+    .sms-phone-list{display:grid;gap:0.6rem;margin-bottom:1rem;max-height:160px;overflow-y:auto;padding-right:0.25rem}
+    .phone-item{display:flex;justify-content:space-between;align-items:center;background:#f8f9fa;border:1px solid #e5e7eb;border-radius:10px;padding:0.5rem 0.75rem}
+    .phone-item span{font-size:0.85rem;color:#1f2937;font-family:monospace;font-weight:600}
+    .btn-remove-phone{background:none;border:none;color:#9ca3af;cursor:pointer;font-size:0.9rem;transition:color 0.2s}
+    .btn-remove-phone:hover{color:#ef4444}
+    
+    .add-phone-row{display:flex;gap:0.5rem}
+    .phone-input{flex:1;background:#ffffff;border:1px solid #cbd5e1;border-radius:10px;padding:0.45rem 0.75rem;color:#1f2937;font-size:0.85rem;font-family:monospace}
+    .phone-input:focus{outline:none;border-color:#2563EB}
+    .btn-add-phone{background:#f1f5f9;border:1px solid #cbd5e1;color:#475569;border-radius:10px;padding:0.45rem 0.85rem;cursor:pointer;font-size:0.82rem;font-weight:600;transition:all 0.2s}
+    .btn-add-phone:hover{background:#e2e8f0;color:#1f2937}
+
+    footer{text-align:center;padding:2.5rem 1rem 2rem;color:#475569;font-size:.82rem;border-top:1px solid rgba(255,255,255,.03);margin-top:auto}
+
+    /* ── Confirm SOS Modal ── */
+    .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:999;display:none;align-items:center;justify-content:center}
+    .confirm-overlay.show{display:flex}
+    .confirm-box{background:#ffffff;border:1px solid #fca5a5;border-radius:24px;padding:2.5rem 2rem;max-width:420px;width:90%;text-align:center;box-shadow:0 10px 40px rgba(239,68,68,0.1);animation:popIn .25s cubic-bezier(.175,.885,.32,1.275)}
+    @keyframes popIn{0%{transform:scale(.88);opacity:0}100%{transform:scale(1);opacity:1}}
+    .confirm-icon{width:70px;height:70px;border-radius:50%;background:#DC2626;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;margin:0 auto 1.25rem;box-shadow:0 0 30px rgba(239,68,68,.4);animation:pulseGlow 1.5s ease-in-out infinite}
+    @keyframes pulseGlow{0%,100%{box-shadow:0 0 20px rgba(239,68,68,.35)}50%{box-shadow:0 0 45px rgba(239,68,68,.6)}}
+    .confirm-title{font-size:1.4rem;font-weight:800;color:#1f2937;margin-bottom:.5rem}
+    .confirm-desc{color:#4b5563;font-size:.9rem;line-height:1.6;margin-bottom:1.75rem}
+    .confirm-actions{display:flex;gap:.75rem}
+    .btn-cancel{flex:1;background:#f1f5f9;border:1px solid #cbd5e1;color:#475569;padding:.7rem;border-radius:12px;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .2s}
+    .btn-cancel:hover{background:#e2e8f0;color:#1f2937}
+    .btn-confirm-sos{flex:2;background:#DC2626;border:none;color:#fff;padding:.7rem;border-radius:12px;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(239,68,68,.35)}
+    .btn-confirm-sos:hover{box-shadow:0 4px 30px rgba(239,68,68,.55);transform:translateY(-1px)}
+
+    /* ── Success SOS Modal ── */
+    .success-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:999;display:none;align-items:center;justify-content:center}
+    .success-overlay.show{display:flex}
+    .success-box{background:#ffffff;border:1px solid #a7f3d0;border-radius:24px;padding:2.5rem 2rem;max-width:440px;width:90%;text-align:center;box-shadow:0 10px 40px rgba(34,197,94,0.1);animation:popIn .25s cubic-bezier(.175,.885,.32,1.275)}
+    .success-icon{width:70px;height:70px;border-radius:50%;background:#16A34A;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;margin:0 auto 1.25rem;box-shadow:0 0 30px rgba(34,197,94,.45)}
+    .success-title{font-size:1.4rem;font-weight:800;color:#16A34A;margin-bottom:.5rem}
+    .success-desc{color:#4b5563;font-size:.88rem;line-height:1.6;margin-bottom:1.5rem}
+    .success-details{background:#f0fdf4;border:1px solid rgba(34,197,94,.12);border-radius:14px;padding:1rem;margin-bottom:1.5rem;text-align:left;display:grid;gap:.55rem}
+    .detail-row{display:flex;justify-content:space-between;font-size:.82rem}
+    .detail-label{color:#475569;font-weight:700}
+    .detail-val{color:#1f2937;font-weight:700}
+    .btn-dismiss{width:100%;background:#16A34A;border:none;color:#fff;padding:.75rem;border-radius:12px;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(34,197,94,.3)}
+    .btn-dismiss:hover{box-shadow:0 4px 30px rgba(34,197,94,.5);transform:translateY(-1px)}
+    .sms-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(37,99,235,0.06);border:1px solid rgba(37,99,235,0.15);color:#2563EB;font-size:.75rem;font-weight:600;padding:.3rem .75rem;border-radius:20px;margin-bottom:1rem}
+
+    .main-container-card {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      color: #212529;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"><span></span><span></span></div>
+  
+  <div class="page-wrapper">
+    <nav class="top-bar">
+      <div class="container d-flex align-items-center justify-content-between">
+        <a class="brand" href="emergency-center.html"><i class="bi bi-telephone-forward-fill"></i>SOS Emergency</a>
+        <a href="emergency-center.html" class="back-btn"><i class="bi bi-arrow-left"></i> Back to Emergency Center</a>
+      </div>
+    </nav>
+
+    <div class="content">
+      <div class="main-container-card">
+        <div class="container">
+          <div class="row align-items-center gy-5">
+          
+          <!-- Left side: SOS triggers & SMS options -->
+          <div class="col-lg-6">
+            <h1>SOS Emergency Alert</h1>
+            <p class="subtitle">Instantly alert emergency responders, share live GPS tracking, and notify registered family contacts by SMS.</p>
+
+            <div class="sos-container-box">
+              <div class="sos-ring">
+                <button class="sos-btn" id="sosBtn" onclick="showConfirm()">SOS</button>
+              </div>
+            </div>
+
+            <!-- SMS Config Box -->
+            <div class="sms-config-card mb-4">
+              <div class="sms-toggle-container">
+                <div class="sms-toggle-label">
+                  <i class="bi bi-chat-text-fill"></i>
+                  <div>
+                    <h3 class="sms-toggle-title">SMS Safety Alerting</h3>
+                    <p class="sms-toggle-desc">Automatically send location texts on SOS activation</p>
+                  </div>
+                </div>
+                <label class="ios-switch">
+                  <input type="checkbox" id="smsToggle" checked onchange="toggleSMS()">
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <h4 class="sms-contacts-title">Emergency SMS Contacts</h4>
+              <div class="sms-phone-list" id="smsPhoneList">
+                <!-- Dynamically loaded -->
+              </div>
+
+              <div class="add-phone-row">
+                <input type="text" class="phone-input" id="newPhoneInput" placeholder="+919876543210" onkeypress="handleKeyPress(event)">
+                <button class="btn-add-phone" onclick="addContactNumber()"><i class="bi bi-plus-lg"></i> Add</button>
+              </div>
+            </div>
+
+            <!-- Base Info Grid -->
+            <div class="info-row">
+              <div class="info-box">
+                <h4>Dispatch Code</h4>
+                <p>112 (Police/Med)</p>
+              </div>
+              <div class="info-box">
+                <h4>Response SLA</h4>
+                <p>Under 3 min</p>
+              </div>
+              <div class="info-box">
+                <h4>GPS Feed</h4>
+                <p style="color:#4ade80">Active 🛰️</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right side: Animated Biometric Digital Tourist Passport -->
+          <div class="col-lg-5 offset-lg-1">
+            <div class="passport-container">
+              <div class="passport-card">
+                <div class="passport-header">
+                  <span class="passport-logo">Tourist ID & Safety Pass</span>
+                  <div class="passport-emblem"><i class="bi bi-globe-americas"></i></div>
+                </div>
+                <div class="passport-body">
+                  <div class="passport-photo">
+                    <i class="bi bi-person-fill-lock"></i>
+                  </div>
+                  <div class="passport-details">
+                    <p class="passport-field">ID NUMBER / SAFETY PASS ID</p>
+                    <p class="passport-value" style="font-family:monospace; color:#fbbf24">TS-984-2026-SECURE</p>
+                    
+                    <p class="passport-field">SURNAME / FIRST NAME</p>
+                    <p class="passport-value">LAKSHMI SRI</p>
+                    
+                    <p class="passport-field">ACTIVE STATUS</p>
+                    <p class="passport-value" style="color:#34d399"><i class="bi bi-shield-check me-1"></i> PROTECTED GUEST</p>
+                    
+                    <p class="passport-field">MONITORING HUB</p>
+                    <p class="passport-value">PARIS SAFETY HQ</p>
+                  </div>
+                </div>
+                
+                <div class="passport-stamp-zone">
+                  <span class="passport-stamp stamp-verified"><i class="bi bi-patch-check-fill me-1"></i>Verified Safe</span>
+                  <span class="passport-stamp stamp-gps"><i class="bi bi-radar me-1"></i>GPS Link Active</span>
+                  <span class="passport-stamp stamp-sos"><i class="bi bi-bell-fill me-1"></i>SOS Shield</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <footer>&copy; 2026 Smart Tourist Safety Monitoring System</footer>
+  </div>
+
+  <!-- ── Confirm SOS Modal ── -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-box">
+      <div class="confirm-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+      <div class="confirm-title">Confirm SOS Trigger</div>
+      <div class="confirm-desc">
+        Are you sure? This will instantly trigger a critical incident alert at Safety HQ and broadcast an SMS to all listed emergency contacts.
+      </div>
+      <div class="confirm-actions">
+        <button class="btn-cancel" onclick="hideConfirm()">Cancel</button>
+        <button class="btn-confirm-sos" onclick="triggerSOS()">
+          <i class="bi bi-telephone-forward me-1"></i> Broadcast SOS
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Success SOS Modal ── -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-box">
+      <div class="success-icon"><i class="bi bi-check-lg"></i></div>
+      <div class="success-title">SOS Broadcasted</div>
+      <div class="sms-badge"><i class="bi bi-chat-text-fill"></i> Safety SMS Transmitted</div>
+      <div class="success-desc">
+        Your safety signal is active. Nearby rescue vehicles have been dispatched. Do not close your browser tab.
+      </div>
+      <div class="success-details">
+        <div class="detail-row">
+          <span class="detail-label">🛰️ GPS Location</span>
+          <span class="detail-val" id="popupLat">Fetching location...</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">📱 SMS Delivery</span>
+          <span class="detail-val" id="smsStatus" style="color:#fbbf24">Broadcasting...</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">🔒 Incident ID</span>
+          <span class="detail-val" id="alertId">—</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">📞 Emergency SLA</span>
+          <span class="detail-val">112 (Dispatched)</span>
+        </div>
+      </div>
+      <button class="btn-dismiss" onclick="hideSuccess()">
+        <i class="bi bi-check2-circle me-1"></i> Acknowledge
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.port === '5000' ? '' : 'http://127.0.0.1:5000';
+    let phoneNumbers = [];
+
+    // Load initial config from Flask
+    async function loadSOSConfig() {
+      try {
+        const res = await fetch(`${API_BASE}/api/sos/config`);
+        const config = await res.json();
+        
+        document.getElementById('smsToggle').checked = config.enabled;
+        phoneNumbers = config.numbers || [];
+        renderPhoneList();
+      } catch (err) {
+        console.error("Error loading config:", err);
+      }
+    }
+
+    function renderPhoneList() {
+      const list = document.getElementById('smsPhoneList');
+      if (phoneNumbers.length === 0) {
+        list.innerHTML = `<div class="text-muted" style="font-size: 0.8rem; padding: 0.5rem 0;">No contacts registered. SMS will not be sent.</div>`;
+        return;
+      }
+      list.innerHTML = phoneNumbers.map((phone, index) => `
+        <div class="phone-item">
+          <span><i class="bi bi-telephone-outbound me-2 text-primary"></i>${phone}</span>
+          <button class="btn-remove-phone" onclick="removeContactNumber(${index})"><i class="bi bi-x-circle-fill"></i></button>
+        </div>
+      `).join('');
+    }
+
+    async function saveConfig() {
+      try {
+        const enabled = document.getElementById('smsToggle').checked;
+        const res = await fetch(`${API_BASE}/api/sos/config`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            enabled: enabled,
+            numbers: phoneNumbers
+          })
+        });
+        const data = await res.json();
+        console.log("Config saved:", data.config);
+      } catch (err) {
+        console.error("Error saving config:", err);
+      }
+    }
+
+    async function toggleSMS() {
+      await saveConfig();
+    }
+
+    async function addContactNumber() {
+      const input = document.getElementById('newPhoneInput');
+      const val = input.value.trim();
+      if (!val) return;
+      
+      // Simple validation for phone numbers
+      if (!val.startsWith('+') || val.length < 10) {
+        alert("Please enter a valid international number starting with '+' (e.g. +919876543210)");
+        return;
+      }
+      
+      if (!phoneNumbers.includes(val)) {
+        phoneNumbers.push(val);
+        input.value = '';
+        renderPhoneList();
+        await saveConfig();
+      }
+    }
+
+    async function removeContactNumber(index) {
+      phoneNumbers.splice(index, 1);
+      renderPhoneList();
+      await saveConfig();
+    }
+
+    function handleKeyPress(e) {
+      if (e.key === 'Enter') {
+        addContactNumber();
+      }
+    }
+
+    function showConfirm() {
+      document.getElementById('confirmOverlay').classList.add('show');
+    }
+    function hideConfirm() {
+      document.getElementById('confirmOverlay').classList.remove('show');
+    }
+    function hideSuccess() {
+      document.getElementById('successOverlay').classList.remove('show');
+    }
+
+    async function triggerSOS() {
+      hideConfirm();
+
+      // Show success modal immediately
+      const alertId = 'SOS-' + Math.floor(10000 + Math.random() * 90000);
+      document.getElementById('alertId').textContent = alertId;
+      document.getElementById('smsStatus').textContent = 'Broadcasting...';
+      document.getElementById('smsStatus').style.color = '#fbbf24';
+      document.getElementById('popupLat').textContent = 'Acquiring GPS...';
+      document.getElementById('successOverlay').classList.add('show');
+
+      let currentLat = '48.8584';
+      let currentLng = '2.2945';
+
+      // Attempt to get user GPS
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            currentLat = pos.coords.latitude.toFixed(4);
+            currentLng = pos.coords.longitude.toFixed(4);
+            document.getElementById('popupLat').textContent = `${currentLat}°N, ${currentLng}°E`;
+            submitSOS(currentLat, currentLng);
+          },
+          () => {
+            document.getElementById('popupLat').textContent = '48.8584°N, 2.2945°E';
+            submitSOS(currentLat, currentLng);
+          }
+        );
+      } else {
+        document.getElementById('popupLat').textContent = '48.8584°N, 2.2945°E';
+        submitSOS(currentLat, currentLng);
+      }
+    }
+
+    async function submitSOS(lat, lng) {
+      try {
+        const res = await fetch(`${API_BASE}/api/sos`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ lat: lat + "°N", lng: lng + "°E" })
+        });
+        const result = await res.json();
+        console.log('SOS API Result:', result);
+
+        if (result.sms_sent) {
+          document.getElementById('smsStatus').textContent = '✓ Transmitted';
+          document.getElementById('smsStatus').style.color = '#4ade80';
+        } else {
+          document.getElementById('smsStatus').textContent = result.sms_note || 'Failed';
+          document.getElementById('smsStatus').style.color = '#fbbf24';
+        }
+      } catch (err) {
+        console.error('Error hitting SOS endpoint:', err);
+        document.getElementById('smsStatus').textContent = 'Offline Fallback';
+        document.getElementById('smsStatus').style.color = '#f87171';
+      }
+    }
+
+    // Init on load
+    loadSOSConfig();
+  </script>
+</body>
+</html>

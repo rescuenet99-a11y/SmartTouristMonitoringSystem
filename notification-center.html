@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notification Center – Smart Tourist Safety</title>
+  <meta name="description" content="View all system notifications, push alerts, and broadcast messages." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',system-ui,sans-serif;background:#112229;color:#212529;min-height:100vh}
+    .bg-mesh{display:none}
+
+    .page-wrapper{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+    .top-bar {
+      background: rgba(6, 7, 10, 0.7);
+      backdrop-filter: blur(20px) saturate(1.6);
+      -webkit-backdrop-filter: blur(20px) saturate(1.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.9rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .top-bar .brand {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+    .top-bar .brand i {
+      color: #a855f7;
+      margin-right: 0.45rem;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.4rem 0.8rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.25s ease;
+    }
+    .back-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateX(-2px);
+    }
+
+    .content{flex:1;padding:2rem 1rem}
+    h1{font-weight:800;font-size:2rem;text-align:center;margin-bottom:.5rem;color:#2563EB}
+    .subtitle{text-align:center;color:#4b5563;max-width:500px;margin:0 auto 1.5rem;line-height:1.6}
+
+    /* Tabs */
+    .tabs{display:flex;justify-content:center;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap}
+    .tab-btn{background:#f8f9fa;border:1px solid #e5e7eb;color:#4b5563;padding:.5rem 1.2rem;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
+    .tab-btn:hover,.tab-btn.active{background:rgba(37,99,235,0.06);color:#2563EB;border-color:rgba(37,99,235,0.2)}
+    .tab-btn .badge-count{background:#2563EB;color:#fff;font-size:.65rem;padding:.15rem .45rem;border-radius:6px;margin-left:.4rem}
+
+    /* Notification list */
+    .notif-list{max-width:750px;margin:0 auto;display:flex;flex-direction:column;gap:.75rem}
+    .notif-item{background:#ffffff;border:1px solid #e5e7eb;border-radius:16px;padding:1.15rem 1.35rem;display:flex;gap:1rem;align-items:flex-start;transition:transform .2s,background .2s;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.03)}
+    .notif-item:hover{transform:translateX(3px);background:#f8f9fa;border-color:#cbd5e1}
+    .notif-item.unread{border-left:3px solid #2563EB}
+    .notif-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff;flex-shrink:0}
+    .ni-sos{background:#ef4444}
+    .ni-location{background:#22c55e}
+    .ni-alert{background:#f59e0b}
+    .ni-system{background:#64748b}
+    .ni-family{background:#0ea5e9}
+    .notif-body{flex:1}
+    .notif-body h4{font-size:.9rem;font-weight:700;margin-bottom:.2rem;color:#1f2937}
+    .notif-body p{margin:0;font-size:.82rem;color:#4b5563;line-height:1.5}
+    .notif-time{font-size:.75rem;color:#64748b;white-space:nowrap;flex-shrink:0;margin-top:.2rem}
+
+    /* Mark all read */
+    .mark-read{max-width:750px;margin:0 auto 1rem;display:flex;justify-content:flex-end}
+    .mark-read button{background:none;border:1px solid #cbd5e1;color:#475569;padding:.4rem 1rem;border-radius:8px;font-size:.8rem;cursor:pointer;transition:all .2s}
+    .mark-read button:hover{background:rgba(37,99,235,0.05);color:#2563EB;border-color:#bfdbfe}
+
+    .main-container-card {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      color: #212529;
+    }
+
+    footer{text-align:center;padding:2rem 1rem;color:#475569;font-size:.82rem;border-top:1px solid rgba(255,255,255,.05);margin-top:auto}
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"><span></span><span></span></div>
+  <div class="page-wrapper">
+    <nav class="top-bar">
+      <div class="container d-flex align-items-center justify-content-between">
+        <a class="brand" href="emergency-center.html"><i class="bi bi-bell-fill"></i>Notification Center</a>
+        <a href="emergency-center.html" class="back-btn"><i class="bi bi-arrow-left"></i> Back to Emergency Center</a>
+      </div>
+    </nav>
+
+    <div class="content">
+      <div class="main-container-card">
+        <h1>Notification Center</h1>
+        <p class="subtitle">Stay informed with real-time alerts, system updates, and safety broadcasts.</p>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab-btn active">All<span class="badge-count">8</span></button>
+          <button class="tab-btn">Emergency<span class="badge-count">2</span></button>
+          <button class="tab-btn">Alerts<span class="badge-count">3</span></button>
+          <button class="tab-btn">System</button>
+        </div>
+
+        <div class="mark-read"><button onclick="markAllRead()"><i class="bi bi-check2-all me-1"></i>Mark all as read</button></div>
+
+        <!-- Notifications -->
+        <div class="notif-list" id="notifList">
+          <!-- Loaded dynamically from API -->
+        </div>
+      </div>
+    </div>
+
+    <footer>&copy; 2026 Smart Tourist Safety Monitoring System</footer>
+  </div>
+
+  <script>
+    const API_BASE = window.location.port === '5000' ? '' : 'http://127.0.0.1:5000';
+
+    async function loadNotifications() {
+      try {
+        const res = await fetch(`${API_BASE}/api/notifications`);
+        const notifs = await res.json();
+
+        // Calculate active unread badges for tabs
+        let allUnread = 0;
+        let emergencyUnread = 0;
+        let alertsUnread = 0;
+
+        notifs.forEach(n => {
+          if (n.unread) {
+            allUnread++;
+            if (n.icon_class === 'ni-sos') emergencyUnread++;
+            if (n.icon_class === 'ni-alert') alertsUnread++;
+          }
+        });
+
+        // Update tabs badges
+        const tabs = document.querySelectorAll('.tab-btn');
+        if (tabs.length >= 3) {
+          tabs[0].innerHTML = `All${allUnread > 0 ? `<span class="badge-count">${allUnread}</span>` : ''}`;
+          tabs[1].innerHTML = `Emergency${emergencyUnread > 0 ? `<span class="badge-count">${emergencyUnread}</span>` : ''}`;
+          tabs[2].innerHTML = `Alerts${alertsUnread > 0 ? `<span class="badge-count">${alertsUnread}</span>` : ''}`;
+        }
+
+        const list = document.getElementById('notifList');
+        list.innerHTML = notifs.map(n => `
+          <div class="notif-item ${n.unread ? 'unread' : ''}">
+            <div class="notif-icon ${n.icon_class}"><i class="bi ${n.icon}"></i></div>
+            <div class="notif-body">
+              <h4>${n.title}</h4>
+              <p>${n.desc}</p>
+            </div>
+            <span class="notif-time">${n.time}</span>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error("Error loading notifications:", err);
+      }
+    }
+
+    async function markAllRead() {
+      try {
+        const res = await fetch(`${API_BASE}/api/notifications/read-all`, { method: 'POST' });
+        if (res.ok) {
+          loadNotifications();
+        }
+      } catch (err) {
+        console.error("Error marking all read:", err);
+      }
+    }
+
+    // Initialize
+    loadNotifications();
+    setInterval(loadNotifications, 5000);
+  </script>
+</body>
+</html>
