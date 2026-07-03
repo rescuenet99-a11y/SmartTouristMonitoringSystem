@@ -1,42 +1,52 @@
 from geopy.distance import geodesic
-
-RISK_ZONES = [
-
-{
-"name":"Restricted Forest",
-"lat":13.0840,
-"lng":80.2740,
-"radius":300,
-"risk":"HIGH"
-},
-
-{
-"name":"River Side",
-"lat":13.0860,
-"lng":80.2760,
-"radius":200,
-"risk":"MEDIUM"
-}
-
-]
-
+from database import mysql
 
 def check_risk_zone(latitude, longitude):
 
-    current = (latitude, longitude)
+    cursor = mysql.connection.cursor()
 
-    for zone in RISK_ZONES:
+    cursor.execute("""
+        SELECT zone_name,
+               latitude,
+               longitude,
+               radius,
+               risk_level
+        FROM risk_zones
+    """)
 
-        d = geodesic(
+    zones = cursor.fetchall()
+
+    cursor.close()
+
+    current = (float(latitude), float(longitude))
+
+    for zone in zones:
+
+        zone_name = zone[0]
+        zone_lat = float(zone[1])
+        zone_lng = float(zone[2])
+        radius = float(zone[3])
+        risk = zone[4]
+
+        distance = geodesic(
             current,
-            (zone["lat"],zone["lng"])
+            (zone_lat, zone_lng)
         ).meters
 
-        if d <= zone["radius"]:
+        if distance <= radius:
 
-            return zone
+            return {
+
+                "risk":risk,
+
+                "name":zone_name
+
+            }
 
     return {
+
         "risk":"LOW",
+
         "name":"Safe Area"
+
     }

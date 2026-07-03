@@ -76,3 +76,42 @@ else{
     alert("Geolocation Not Supported");
 
 }
+// Receive Live Tracking Updates
+socket.on("tracking_update", function(data){
+
+    // Tourist Status
+    if(document.getElementById("touriststatus")){
+        document.getElementById("touriststatus").innerHTML =
+            data.geofence;
+    }
+
+    // Risk Level
+    if(document.getElementById("risk")){
+
+        document.getElementById("risk").innerHTML =
+            data.risk.risk || data.risk;
+
+        if(data.risk.risk === "HIGH"){
+
+            document.getElementById("risk").className =
+            "badge bg-danger";
+
+        }
+
+        else if(data.risk.risk === "MEDIUM"){
+
+            document.getElementById("risk").className =
+            "badge bg-warning";
+
+        }
+
+        else{
+
+            document.getElementById("risk").className =
+            "badge bg-success";
+
+        }
+
+    }
+
+});

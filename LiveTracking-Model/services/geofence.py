@@ -1,16 +1,36 @@
 from geopy.distance import geodesic
-
-SAFE_ZONE = (13.0827, 80.2707)
-SAFE_RADIUS = 500   # meters
-
+from database import mysql
 
 def check_geofence(latitude, longitude):
 
-    current = (latitude, longitude)
+    cursor = mysql.connection.cursor()
 
-    distance = geodesic(current, SAFE_ZONE).meters
+    cursor.execute("""
+        SELECT zone_name, latitude, longitude, radius, zone_type
+        FROM geofence
+    """)
 
-    if distance <= SAFE_RADIUS:
-        return "SAFE"
+    zones = cursor.fetchall()
 
-    return "OUTSIDE"
+    cursor.close()
+
+    current = (float(latitude), float(longitude))
+
+    for zone in zones:
+
+        zone_name = zone[0]
+        zone_lat = float(zone[1])
+        zone_lng = float(zone[2])
+        radius = float(zone[3])
+        zone_type = zone[4]
+
+        distance = geodesic(
+            current,
+            (zone_lat, zone_lng)
+        ).meters
+
+        if distance <= radius:
+
+            return zone_type
+
+    return "OUTSIDE SAFE ZONE"
