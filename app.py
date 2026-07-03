@@ -1,7 +1,34 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, jsonify
 import os
+import mysql.connector
+from mysql.connector import Error
 
 app = Flask(__name__)
+
+# Database connection helper (reuse project settings)
+DB_CONFIG = {
+    "host": os.getenv("DB_HOST", "localhost"),
+    "user": os.getenv("DB_USER", "root"),
+    "password": os.getenv("DB_PASSWORD", "intern26AI@"),
+    "database": os.getenv("DB_NAME", "smart_tourist_db")
+}
+
+def get_connection():
+    """Create and return a new MySQL connection using project config."""
+    print(DB_CONFIG)
+    return mysql.connector.connect(**DB_CONFIG)
+
+def query_db(query, params=None):
+    """Execute a SELECT query and return list of dict rows."""
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute(query, params or ())
+        rows = cursor.fetchall()
+        return rows
+    finally:
+        cursor.close()
+        conn.close()
 
 # Routes for each dashboard page
 @app.route('/')
@@ -24,6 +51,11 @@ def analytics():
 @app.route('/heatmaps')
 def heatmaps():
     return render_template('heatmaps.html')
+
+@app.route('/api/tourist_locations')
+def api_tourist_locations():
+    rows = query_db('SELECT tourist_id AS id, name, latitude, longitude, status FROM Tourist')
+    return jsonify(rows)
 
 @app.route('/reports')
 def reports():
