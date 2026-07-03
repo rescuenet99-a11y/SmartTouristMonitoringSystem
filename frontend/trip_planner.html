@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Planner | Smart Tourist Monitoring System</title>
+    <link rel="stylesheet" href="trip_planner.css">
+    <!-- Link the JavaScript file -->
+    <script src="trip_planner.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1>🌍 Smart Tourist Monitoring System</h1>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#" class="active">Trip Planner</a>
+            <a href="#">Live Tracking</a>
+            <a href="#">Dashboard</a>
+            <a href="#">Profile</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2>✈️ Plan Your Journey with Confidence</h2>
+            <p>
+                Organize your destinations, travel schedule, and trip timeline in one convenient dashboard.
+            </p>
+            <button id="start-planning-btn">Start Planning</button>
+        </section>
+
+        <!-- Main Dashboard Content -->
+        <div class="dashboard-grid">
+
+            <!-- Left Column: Add Trip Section -->
+            <section class="trip-form-card" id="planning-section">
+                <h2>Add Trip</h2>
+
+                <!-- Validation Alert Container -->
+                <div id="validation-alert" class="validation-alert" style="display: none;"></div>
+
+                <form id="trip-form" novalidate>
+                    <div class="form-group">
+                        <label for="destination">Destination</label>
+                        <input type="text" id="destination" name="destination" placeholder="Where are you going?"
+                            required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="start-date">Start Date</label>
+                            <input type="date" id="start-date" name="start-date" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="end-date">End Date</label>
+                            <input type="date" id="end-date" name="end-date" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="time">Travel Time</label>
+                            <input type="time" id="time" name="time" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="transport">Transport Mode</label>
+                            <select id="transport" name="transport" required>
+                                <option value="">Select Transport</option>
+                                <option value="Bus">🚌 Bus</option>
+                                <option value="Train">🚆 Train</option>
+                                <option value="Flight">✈️ Flight</option>
+                                <option value="Car">🚗 Car</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="budget">Estimated Budget ($)</label>
+                            <input type="number" id="budget" name="budget" min="0" step="0.01" placeholder="e.g. 500">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notes">Notes</label>
+                            <textarea id="notes" name="notes" rows="3"
+                                placeholder="Enter additional notes (e.g. hotel booking, sightseeings)"></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Add Trip</button>
+                </form>
+            </section>
+
+            <!-- Right Column: Destination List -->
+            <section class="destination-list-card">
+                <h2>Destination List</h2>
+                <div id="destination-container" class="destination-container">
+                    <div id="destination-empty" class="empty-state">
+                        <p>📍 No destinations added yet. Plan your first trip to get started!</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Travel Schedule Section -->
+        <section class="travel-schedule-card">
+            <h2>📅 Travel Schedule</h2>
+            <div class="table-responsive">
+                <table id="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Destination</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Time</th>
+                            <th>Transport</th>
+                            <th>Budget</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-tbody">
+                        <tr id="schedule-empty">
+                            <td colspan="8" class="empty-state-td">📅 No schedule entries. Add a trip above.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Trip Timeline Section -->
+        <section class="trip-timeline-card">
+            <h2>🗺️ Trip Timeline</h2>
+            <div id="timeline-container" class="timeline-container">
+                <div id="timeline-empty" class="empty-state">
+                    <p>🗺️ No timeline events. Your chronological itinerary will appear here.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Smart Tourist Monitoring System. All rights reserved.</p>
+        <p>Designed with ❤️ for modern travelers.</p>
+    </footer>
+</body>
+
+</html>
