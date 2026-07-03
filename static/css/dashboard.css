@@ -1,0 +1,125 @@
+/* dashboard.css */
+:root {
+  --primary-color: #2563EB;       /* Primary Blue */
+  --secondary-color: #1E293B;     /* Dark Slate */
+  --success-color: #22C55E;
+  --warning-color: #F59E0B;
+  --danger-color: #EF4444;
+  --bg-color: #F8FAFC;
+  --card-bg: #FFFFFF;
+  --text-color: #1F2937;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: "Inter", sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  height: 100vh;
+  background-color: var(--secondary-color);
+  color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  transition: width 0.3s ease;
+  overflow-y: auto;
+  padding-top: 1rem;
+}
+.sidebar.collapsed {
+  width: 80px;
+}
+.sidebar .nav-link {
+  color: #cbd5e1;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+  background-color: rgba(255,255,255,0.1);
+  color: #fff;
+}
+.sidebar .nav-link i {
+  font-size: 1.2rem;
+}
+.sidebar .brand {
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Top Navbar */
+.top-navbar {
+  margin-left: 250px; /* width of sidebar */
+  transition: margin-left 0.3s ease;
+  background-color: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}
+.top-navbar.collapsed {
+  margin-left: 80px;
+}
+.top-navbar .navbar-brand {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+/* Main Content */
+.main-content {
+  margin-left: 250px;
+  padding: 2rem;
+  transition: margin-left 0.3s ease;
+}
+.main-content.collapsed {
+  margin-left: 80px;
+}
+
+/* KPI Cards */
+.kpi-card {
+  background-color: var(--card-bg);
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+.kpi-card .card-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--secondary-color);
+}
+.kpi-card .card-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+/* Tables */
+.table-responsive {
+  margin-top: 1rem;
+}
+.table thead th {
+  background-color: var(--secondary-color);
+  color: #fff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .sidebar {
+    left: -250px;
+  }
+  .sidebar.show {
+    left: 0;
+  }
+  .top-navbar,
+  .main-content {
+    margin-left: 0;
+  }
+}

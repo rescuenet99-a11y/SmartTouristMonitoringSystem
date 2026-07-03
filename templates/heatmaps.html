@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Heat Maps - Smart Tourist Safety Monitoring</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Custom Dashboard CSS (shared) -->
+  <link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-sA+4a8RIh/tS/SoaMzhcMZQzZ6qhI/a3ciV0xz0sVb8=" crossorigin=""/>
+  <style>
+    /* Map container full height within its column */
+    #map { height: 70vh; min-height: 400px; }
+    .legend { background: white; padding: 6px 8px; font-size: 0.9rem; border-radius: 5px; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
+    .legend i { width: 12px; height: 12px; float: left; margin-right: 8px; opacity: 0.7; }
+  </style>
+</head>
+<body>
+  <!-- Sidebar (same as other pages) -->
+  <div class="sidebar" id="sidebar">
+    <div class="brand">Smart Tourist Safety Monitoring System</div>
+    <ul class="nav flex-column">
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_dashboard') }}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('tourist_dashboard') }}"><i class="bi bi-people"></i> Tourist Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('analytics') }}"><i class="bi bi-bar-chart"></i> Analytics</a></li>
+      <li class="nav-item"><a class="nav-link active" href="{{ url_for('heatmaps') }}"><i class="bi bi-geo-alt"></i> Heat Maps</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('reports') }}"><i class="bi bi-file-earmark-text"></i> Reports</a></li>
+      <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+    </ul>
+    <button class="btn btn-outline-light mt-3 ms-3" id="sidebarToggle"><i class="bi bi-chevron-left"></i></button>
+  </div>
+
+  <!-- Top Navbar -->
+  <nav class="navbar navbar-expand-lg top-navbar" id="topNavbar">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Heat Maps</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+    <div class="container-fluid mt-4">
+      <!-- Filters -->
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-control" id="filter-date">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Tourist</label>
+          <input type="text" class="form-control" placeholder="Tourist ID or name" id="filter-tourist">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Risk Level</label>
+          <select class="form-select" id="filter-risk">
+            <option value="">All Levels</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Map -->
+      <div class="row">
+        <div class="col-12">
+          <div id="map"></div>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="position-absolute bottom-0 start-0 m-3">
+        <div class="legend" id="map-legend">
+          <div><i style="background: green;"></i> Safe Zone</div>
+          <div><i style="background: orange;"></i> Medium Risk</div>
+          <div><i style="background: red;"></i> High Risk</div>
+          <div><i class="bi bi-exclamation-triangle text-danger"></i> SOS Alert</div>
+          <div><i class="bi bi-question-circle text-primary"></i> Missing Tourist</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="{{ url_for('static', filename='js/heatmaps.js') }}"></script>
+  <script>
+    // Sidebar toggle (shared with other pages)
+    document.getElementById('sidebarToggle').addEventListener('click', function () {
+      const sidebar = document.getElementById('sidebar');
+      const topNav = document.getElementById('topNavbar');
+      const main = document.getElementById('mainContent');
+      sidebar.classList.toggle('collapsed');
+      topNav.classList.toggle('collapsed');
+      main.classList.toggle('collapsed');
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-o9N1j0Zg1XK+0XrT0/6prYE/0xVb2HEIjBVKFlUVglw=" crossorigin=""></script>
+  <!-- Leaflet.heat plugin -->
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+</body>
+</html>
