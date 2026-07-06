@@ -25,6 +25,55 @@ document.addEventListener('DOMContentLoaded', () => {
     const destinationContainer = document.getElementById('destination-container');
     const scheduleTbody = document.getElementById('schedule-tbody');
     const timelineContainer = document.getElementById('timeline-container');
+    const autocompleteList = document.getElementById('autocomplete-list');
+    
+
+    // City Autocomplete functionality
+    let autocompleteTimeout = null;
+
+    destinationInput.addEventListener('input', function() {
+        clearTimeout(autocompleteTimeout);
+        const query = this.value.trim();
+        
+        if (!query) {
+            autocompleteList.style.display = 'none';
+            return;
+        }
+
+        autocompleteTimeout = setTimeout(async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/cities?q=${encodeURIComponent(query)}`);
+                if (!response.ok) return;
+                const cities = await response.json();
+                
+                autocompleteList.innerHTML = '';
+                if (cities.length > 0) {
+                    cities.forEach(city => {
+                        const li = document.createElement('li');
+                        li.textContent = city;
+                        li.addEventListener('click', () => {
+                            destinationInput.value = city;
+                            autocompleteList.style.display = 'none';
+                        });
+                        autocompleteList.appendChild(li);
+                    });
+                    autocompleteList.style.display = 'block';
+                } else {
+                    autocompleteList.style.display = 'none';
+                }
+            } catch (error) {
+                console.error("Autocomplete error:", error);
+                autocompleteList.style.display = 'none';
+            }
+        }, 300); // 300ms debounce
+    });
+
+    // Close autocomplete when clicking outside
+    document.addEventListener('click', (e) => {
+        if (e.target !== destinationInput && !autocompleteList.contains(e.target)) {
+            autocompleteList.style.display = 'none';
+        }
+    });
 
     // Scroll to planning section on hero button click
     if (startPlanningBtn) {
@@ -240,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const transportIcon = getTransportIcon(data.transport);
         const dateRangeText = `${formatDateNice(data.startDate)} - ${formatDateNice(data.endDate)}`;
-        const budgetHtml = data.budget > 0 ? `<p>💰 Budget: $${data.budget.toFixed(2)}</p>` : '';
+        const budgetHtml = data.budget > 0 ? `<p>💰 Budget: ₹${data.budget.toFixed(2)}</p>` : '';
 
         card.innerHTML = `
             <div class="destination-card-content">
@@ -273,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <td>${formatDateNice(data.endDate)}</td>
             <td>${formattedTime}</td>
             <td>${escapeHtml(data.transport)}</td>
-            <td>${data.budget > 0 ? '$' + data.budget.toFixed(2) : '-'}</td>
+            <td>${data.budget > 0 ? '₹' + data.budget.toFixed(2) : '-'}</td>
             <td><span class="badge ${badgeClass}">${status}</span></td>
             <td>
                 <button class="btn-delete-row" onclick="deleteTrip(${id})">Delete</button>
@@ -301,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="timeline-details">
                     <p><strong>Departure:</strong> ${formattedTime} via ${transportIcon} ${escapeHtml(data.transport)}</p>
                     <p><strong>Duration:</strong> ${formatDateNice(data.startDate)} to ${formatDateNice(data.endDate)} (${status})</p>
-                    ${data.budget > 0 ? `<p><strong>Budget:</strong> $${data.budget.toFixed(2)}</p>` : ''}
+                    ${data.budget > 0 ? `<p><strong>Budget:</strong> ₹${data.budget.toFixed(2)}</p>` : ''}
                     ${data.notes ? `<div class="timeline-notes">"${escapeHtml(data.notes)}"</div>` : ''}
                 </div>
             </div>

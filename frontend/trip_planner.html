@@ -13,6 +13,7 @@
 <body>
     <header>
         <h1>🌍 Smart Tourist Monitoring System</h1>
+
         <nav>
             <a href="#">Home</a>
             <a href="#" class="active">Trip Planner</a>
@@ -43,10 +44,10 @@
                 <div id="validation-alert" class="validation-alert" style="display: none;"></div>
 
                 <form id="trip-form" novalidate>
-                    <div class="form-group">
+                    <div class="form-group autocomplete-wrapper">
                         <label for="destination">Destination</label>
-                        <input type="text" id="destination" name="destination" placeholder="Where are you going?"
-                            required>
+                        <input type="text" id="destination" name="destination" placeholder="Where are you going?" autocomplete="off" required>
+                        <ul id="autocomplete-list" class="autocomplete-list"></ul>
                     </div>
 
                     <div class="form-row">
@@ -81,7 +82,7 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="budget">Estimated Budget ($)</label>
+                            <label for="budget">Estimated Budget (₹)</label>
                             <input type="number" id="budget" name="budget" min="0" step="0.01" placeholder="e.g. 500">
                         </div>
 
